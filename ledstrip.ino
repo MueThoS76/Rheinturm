@@ -15,7 +15,7 @@
 
 void display_clock() {
   for (int i = LED_SEKUNDEN_EINER_MIN; i <= LED_SEKUNDEN_EINER_MAX; i++) {
-    if (i + 1 <= sekunden.einer) {
+    if (i - LED_SEKUNDEN_EINER_MIN < sekunden.einer) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;
@@ -23,7 +23,7 @@ void display_clock() {
   }
 
   for (int i = LED_SEKUNDEN_ZEHNER_MIN; i <= LED_SEKUNDEN_ZEHNER_MAX; i++) {
-    if (i - 8 <= sekunden.zehner) {
+    if (i - LED_SEKUNDEN_ZEHNER_MIN < sekunden.zehner) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;
@@ -31,28 +31,28 @@ void display_clock() {
   }
 
   for (int i = LED_MINUTEN_EINER_MIN; i <= LED_MINUTEN_EINER_MAX; i++) {
-    if (i - 13 <= minuten.einer) {
+    if (i - LED_MINUTEN_EINER_MIN < minuten.einer) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;
     }
   }
   for (int i = LED_MINUTEN_ZEHNER_MIN; i <= LED_MINUTEN_ZEHNER_MAX; i++) {
-    if (i - 22 <= minuten.zehner) {
+    if (i - LED_MINUTEN_ZEHNER_MIN < minuten.zehner) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;
     }
   }
   for (int i = LED_STUNDEN_EINER_MIN; i <= LED_STUNDEN_EINER_MAX; i++) {
-    if (i - 27 <= stunden.einer) {
+    if (i - LED_STUNDEN_EINER_MIN < stunden.einer) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;
     }
   }
   for (int i = LED_STUNDEN_ZEHNER_MIN; i <= LED_STUNDEN_ZEHNER_MAX; i++) {
-    if (i - 36 <= stunden.zehner) {
+    if (i - LED_STUNDEN_ZEHNER_MIN < stunden.zehner) {
       ClockLeds[i] = CLOCK_LED_ON;
     } else {
       ClockLeds[i] = CLOCK_LED_OFF;

@@ -133,13 +133,13 @@ void loop() {
   }
   if (Modus == 3 ) Modus=1;
   
-  Serial.print(Modus);
-  Serial.print(" ");
-  Serial.print(Long_Touch);
-  Serial.print(" ");
-  Serial.print(Touched);
-  Serial.print(" ");
-  Serial.print(Press_Time);
-  Serial.print(" ");
-  Serial.println(Touch_Value);
+  //Serial.print(Modus);
+  //Serial.print(" ");
+  //Serial.print(Long_Touch);
+  //Serial.print(" ");
+  //Serial.print(Touched);
+  //Serial.print(" ");
+  //Serial.print(Press_Time);
+  //Serial.print(" ");
+  //Serial.println(Touch_Value);
 }
