@@ -10,11 +10,15 @@
 #include <WiFiSettings.h>
 #include <ArduinoOTA.h>
 #include <time.h>
-#include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 #define NUM_PIXELS_CLOCK 39 // Anzahl LEDs
 #define LED_PIN_CLOCK    16 // LED Pin
 #define NUM_PIXELS_AUX   3 // Anzahl LEDs
 #define LED_PIN_AUX      17 // LED Pin
+
+CRGB ClockLeds[NUM_PIXELS_CLOCK];
+CRGB AuxLeds[NUM_PIXELS_AUX];
+
 
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
@@ -45,8 +49,7 @@ unsigned long Old_Millis = 0;
 int Long_Touch = 0;
 unsigned long Press_Time;
 
-Adafruit_NeoPixel PIXELS_CLOCK(NUM_PIXELS_CLOCK, LED_PIN_CLOCK, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel PIXELS_AUX(NUM_PIXELS_AUX, LED_PIN_AUX, NEO_GRB + NEO_KHZ800);
+
 const char* NTP_SERVER = "de.pool.ntp.org";
 const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
 tm timeinfo;
@@ -103,12 +106,10 @@ void setup() {
     ESP.restart();
   }
 
-  PIXELS_CLOCK.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  PIXELS_CLOCK.clear(); // Set all pixel colors to 'off'
-  //PIXELS_CLOCK.setBrightness(100); 
-  PIXELS_AUX.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  PIXELS_AUX.clear(); // Set all pixel colors to 'off'
-
+  FastLED.addLeds<PL9823, LED_PIN_CLOCK>(ClockLeds, NUM_PIXELS_CLOCK);
+  FastLED.addLeds<NEOPIXEL, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
+  FastLED.clear();
+  FastLED.show();
 }
 
 void loop() {
@@ -131,9 +132,8 @@ void loop() {
       Long_Touch++;
       Touched = 0;
     }else{
-    Touched = 0;
-  }
-
+      Touched = 0;
+    }
   }
   Serial.print(Modus);
   Serial.print(" ");

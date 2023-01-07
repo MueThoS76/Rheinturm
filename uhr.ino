@@ -1,5 +1,3 @@
-
-
 bool getNTPtime(int sec) {
   {
     uint32_t start = millis();

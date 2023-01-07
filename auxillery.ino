@@ -6,8 +6,6 @@ void display_aux(){
     fadeValue-=6;
     if (fadeValue <= 0){fadein = 1;}
   }
-  PIXELS_AUX.setPixelColor(0, PIXELS_AUX.Color(warning.g, fadeValue, warning.b));
 
-  PIXELS_AUX.show();
   
 }
