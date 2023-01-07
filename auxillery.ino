@@ -11,4 +11,3 @@ void display_aux(){
   PIXELS_AUX.show();
   
 }
-//test

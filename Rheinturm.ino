@@ -105,6 +105,7 @@ void setup() {
 
   PIXELS_CLOCK.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
   PIXELS_CLOCK.clear(); // Set all pixel colors to 'off'
+  //PIXELS_CLOCK.setBrightness(100); 
   PIXELS_AUX.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
   PIXELS_AUX.clear(); // Set all pixel colors to 'off'
 
