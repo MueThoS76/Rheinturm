@@ -11,15 +11,21 @@
 #include <ArduinoOTA.h>
 #include <time.h>
 #include <Adafruit_NeoPixel.h>
-#define NUMPIXELS 60 // Anzahl LEDs
-#define LED_PIN        12 // LED Pin
+#define NUM_PIXELS_CLOCK 39 // Anzahl LEDs
+#define LED_PIN_CLOCK    16 // LED Pin
+#define NUM_PIXELS_AUX   3 // Anzahl LEDs
+#define LED_PIN_AUX      17 // LED Pin
+
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
-//#define DEBUG 1
+#define DEBUG 1
 struct ziffern {
   byte einer;
   byte zehner;
 } sekunden, minuten, stunden;
+
+bool fadein = 1;
+int fadeValue = 0;
 
 struct color {
   int r;
@@ -29,6 +35,8 @@ struct color {
 
 color uhr = {100, 80, 0};
 color aus = {0, 0, 0};
+color warning {255, 0 ,0};
+
 
 int Modus = 1;
 int Touch_Value = 0;
@@ -37,8 +45,8 @@ unsigned long Old_Millis = 0;
 int Long_Touch = 0;
 unsigned long Press_Time;
 
-Adafruit_NeoPixel pixels(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
-
+Adafruit_NeoPixel PIXELS_CLOCK(NUM_PIXELS_CLOCK, LED_PIN_CLOCK, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel PIXELS_AUX(NUM_PIXELS_AUX, LED_PIN_AUX, NEO_GRB + NEO_KHZ800);
 const char* NTP_SERVER = "de.pool.ntp.org";
 const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
 tm timeinfo;
@@ -95,8 +103,10 @@ void setup() {
     ESP.restart();
   }
 
-  pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  pixels.clear(); // Set all pixel colors to 'off'
+  PIXELS_CLOCK.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  PIXELS_CLOCK.clear(); // Set all pixel colors to 'off'
+  PIXELS_AUX.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  PIXELS_AUX.clear(); // Set all pixel colors to 'off'
 
 }
 
@@ -105,6 +115,7 @@ void loop() {
   // Your loop code here
   getNTPtime(1);
   display_clock();
+  display_aux();
 
   Touch_Value = touchRead(Touch_PIN);
   if (Touch_Value < Touch_Threshold && Touched == 0) {
