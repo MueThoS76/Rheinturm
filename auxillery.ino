@@ -6,6 +6,5 @@ void display_aux(){
     fadeValue-=6;
     if (fadeValue <= 0){fadein = 1;}
   }
-
-  
+ 
 }

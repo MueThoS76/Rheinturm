@@ -13,13 +13,17 @@
 #include <FastLED.h>
 #define NUM_PIXELS_CLOCK 39 // Anzahl LEDs
 #define LED_PIN_CLOCK    16 // LED Pin
-#define NUM_PIXELS_AUX   3 // Anzahl LEDs
+#define NUM_PIXELS_AUX   3  // Anzahl LEDs
 #define LED_PIN_AUX      17 // LED Pin
+#define BRIGHTNESS  64
+#define CLOCK_LED_ON CRGB::Yellow;
+#define CLOCK_LED_OFF CRGB::Black;
+
 
 CRGB ClockLeds[NUM_PIXELS_CLOCK];
 CRGB AuxLeds[NUM_PIXELS_AUX];
 
-
+#define TIMEINFO_INVALID (timeinfo.tm_year <= (2016 - 1900))
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
 #define DEBUG 1
@@ -30,16 +34,6 @@ struct ziffern {
 
 bool fadein = 1;
 int fadeValue = 0;
-
-struct color {
-  int r;
-  int g;
-  int b;
-};
-
-color uhr = {100, 80, 0};
-color aus = {0, 0, 0};
-color warning {255, 0 ,0};
 
 
 int Modus = 1;
@@ -107,7 +101,9 @@ void setup() {
   }
 
   FastLED.addLeds<PL9823, LED_PIN_CLOCK>(ClockLeds, NUM_PIXELS_CLOCK);
-  FastLED.addLeds<NEOPIXEL, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
+  FastLED.addLeds<PL9823, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
+  FastLED.setMaxPowerInMilliWatts(1000);
+  FastLED.setBrightness(  BRIGHTNESS );
   FastLED.clear();
   FastLED.show();
 }
@@ -124,17 +120,19 @@ void loop() {
     Old_Millis = millis();
     Touched = 1;
   } else if (Touch_Value > Touch_Threshold && Touched == 1) {
-   Press_Time  = millis() - Old_Millis;
+    Press_Time  = millis() - Old_Millis;
     if (Press_Time > 200 && Press_Time < 1500) {
       Modus++;
       Touched = 0;
-    }else if (Press_Time > 1500) {
+    } else if (Press_Time > 1500) {
       Long_Touch++;
       Touched = 0;
-    }else{
+    } else {
       Touched = 0;
     }
   }
+  if (Modus == 3 ) Modus=1;
+  
   Serial.print(Modus);
   Serial.print(" ");
   Serial.print(Long_Touch);
