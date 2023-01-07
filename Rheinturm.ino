@@ -10,12 +10,20 @@
 #include <WiFiSettings.h>
 #include <ArduinoOTA.h>
 #include <time.h>
-#include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 #define NUM_PIXELS_CLOCK 39 // Anzahl LEDs
 #define LED_PIN_CLOCK    16 // LED Pin
-#define NUM_PIXELS_AUX   3 // Anzahl LEDs
+#define NUM_PIXELS_AUX   3  // Anzahl LEDs
 #define LED_PIN_AUX      17 // LED Pin
+#define BRIGHTNESS  64
+#define CLOCK_LED_ON CRGB::Yellow;
+#define CLOCK_LED_OFF CRGB::Black;
 
+
+CRGB ClockLeds[NUM_PIXELS_CLOCK];
+CRGB AuxLeds[NUM_PIXELS_AUX];
+
+#define TIMEINFO_INVALID (timeinfo.tm_year <= (2016 - 1900))
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
 #define DEBUG 1
@@ -27,16 +35,6 @@ struct ziffern {
 bool fadein = 1;
 int fadeValue = 0;
 
-struct color {
-  int r;
-  int g;
-  int b;
-};
-
-color uhr = {100, 80, 0};
-color aus = {0, 0, 0};
-color warning {255, 0 ,0};
-
 
 int Modus = 1;
 int Touch_Value = 0;
@@ -45,8 +43,7 @@ unsigned long Old_Millis = 0;
 int Long_Touch = 0;
 unsigned long Press_Time;
 
-Adafruit_NeoPixel PIXELS_CLOCK(NUM_PIXELS_CLOCK, LED_PIN_CLOCK, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel PIXELS_AUX(NUM_PIXELS_AUX, LED_PIN_AUX, NEO_GRB + NEO_KHZ800);
+
 const char* NTP_SERVER = "de.pool.ntp.org";
 const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
 tm timeinfo;
@@ -103,12 +100,12 @@ void setup() {
     ESP.restart();
   }
 
-  PIXELS_CLOCK.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  PIXELS_CLOCK.clear(); // Set all pixel colors to 'off'
-  //PIXELS_CLOCK.setBrightness(100); 
-  PIXELS_AUX.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-  PIXELS_AUX.clear(); // Set all pixel colors to 'off'
-
+  FastLED.addLeds<PL9823, LED_PIN_CLOCK>(ClockLeds, NUM_PIXELS_CLOCK);
+  FastLED.addLeds<PL9823, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
+  FastLED.setMaxPowerInMilliWatts(1000);
+  FastLED.setBrightness(  BRIGHTNESS );
+  FastLED.clear();
+  FastLED.show();
 }
 
 void loop() {
@@ -123,25 +120,26 @@ void loop() {
     Old_Millis = millis();
     Touched = 1;
   } else if (Touch_Value > Touch_Threshold && Touched == 1) {
-   Press_Time  = millis() - Old_Millis;
+    Press_Time  = millis() - Old_Millis;
     if (Press_Time > 200 && Press_Time < 1500) {
       Modus++;
       Touched = 0;
-    }else if (Press_Time > 1500) {
+    } else if (Press_Time > 1500) {
       Long_Touch++;
       Touched = 0;
-    }else{
-    Touched = 0;
+    } else {
+      Touched = 0;
+    }
   }
-
-  }
-  Serial.print(Modus);
-  Serial.print(" ");
-  Serial.print(Long_Touch);
-  Serial.print(" ");
-  Serial.print(Touched);
-  Serial.print(" ");
-  Serial.print(Press_Time);
-  Serial.print(" ");
-  Serial.println(Touch_Value);
+  if (Modus == 3 ) Modus=1;
+  
+  //Serial.print(Modus);
+  //Serial.print(" ");
+  //Serial.print(Long_Touch);
+  //Serial.print(" ");
+  //Serial.print(Touched);
+  //Serial.print(" ");
+  //Serial.print(Press_Time);
+  //Serial.print(" ");
+  //Serial.println(Touch_Value);
 }
