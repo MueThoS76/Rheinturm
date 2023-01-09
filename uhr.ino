@@ -1,3 +1,5 @@
+#define TIMEINFO_INVALID (timeinfo.tm_year <= (2016 - 1900))
+
 bool getNTPtime(int sec) {
   uint32_t start = millis();
   do {

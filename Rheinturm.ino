@@ -23,7 +23,6 @@
 CRGB ClockLeds[NUM_PIXELS_CLOCK];
 CRGB AuxLeds[NUM_PIXELS_AUX];
 
-#define TIMEINFO_INVALID (timeinfo.tm_year <= (2016 - 1900))
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
 #define DEBUG 1
@@ -131,8 +130,10 @@ void loop() {
       Touched = 0;
     }
   }
-  if (Modus == 3 ) Modus=1;
-  
+  if (Modus == 3 ) Modus = 1;
+
+
+#ifdef DEBUG
   //Serial.print(Modus);
   //Serial.print(" ");
   //Serial.print(Long_Touch);
@@ -142,4 +143,5 @@ void loop() {
   //Serial.print(Press_Time);
   //Serial.print(" ");
   //Serial.println(Touch_Value);
+#endif
 }
