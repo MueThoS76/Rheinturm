@@ -15,7 +15,7 @@
 #define LED_PIN_CLOCK    16 // LED Pin
 #define NUM_PIXELS_AUX   3  // Anzahl LEDs
 #define LED_PIN_AUX      17 // LED Pin
-#define BRIGHTNESS  64
+#define BRIGHTNESS  10
 #define CLOCK_LED_ON CRGB::Yellow;
 #define CLOCK_LED_OFF CRGB::Black;
 
