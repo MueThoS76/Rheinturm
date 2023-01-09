@@ -2,7 +2,8 @@
     WiFi-Settings: https://github.com/Juerd/ESP-WiFiSettings
     NTP-Server: https://www.pool.ntp.org/zone/europe
     time zone settings: (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
-     See https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for Timezone codes for your region
+    See https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for Timezone codes for your region
+    https://github.com/espressif/arduino-esp32/tree/master/libraries/Preferences
 */
 
 
@@ -16,9 +17,9 @@
 #define NUM_PIXELS_AUX   3  // Anzahl LEDs
 #define LED_PIN_AUX      17 // LED Pin
 #define BRIGHTNESS  10
-#define CLOCK_LED_ON CRGB::Yellow;
-#define CLOCK_LED_OFF CRGB::Black;
+#include <Preferences.h> 
 
+Preferences preferences;
 
 CRGB ClockLeds[NUM_PIXELS_CLOCK];
 CRGB AuxLeds[NUM_PIXELS_AUX];
@@ -98,6 +99,29 @@ void setup() {
     //Serial.println("Time not set");
     ESP.restart();
   }
+
+  // Einstellungen laden....
+  preferences.begin("myfile", false);
+  //preferences.clear(); // remove all preferences in namespace myfile
+  //preferences.remove("varname");// remove varname in the namespace
+
+  // Testdaten...
+  int boardId = 18; 
+  float param = 26.5;
+
+  preferences.putUInt("boardId", boardId);
+  preferences.putFloat("param", param);
+
+  unsigned int readId = preferences.getUInt("boardId", 0); // get boardId or if key doesn't exist set variable to 0
+  Serial.print("Read Id = ");
+  Serial.println(readId);
+  
+  float readParam = preferences.getFloat("param", 0); //
+  Serial.print("Read param = ");
+  Serial.println(readParam);
+  
+  preferences.end();
+  // Einstellungen ende
 
   FastLED.addLeds<PL9823, LED_PIN_CLOCK>(ClockLeds, NUM_PIXELS_CLOCK);
   FastLED.addLeds<PL9823, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
