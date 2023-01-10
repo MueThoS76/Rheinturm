@@ -18,6 +18,8 @@
 #define LED_PIN_AUX      17 // LED Pin
 #define BRIGHTNESS  10
 #include <Preferences.h> 
+#include <WebServer.h>
+WebServer server(80);
 
 // Farben
 uint CLOCK_COLOR_SEKUNDEN_EINER  = 0; 
@@ -132,6 +134,14 @@ void setup() {
   preferences.end();
   // Einstellungen ende
 
+
+  // Webserver...
+  server.on("/", handle_OnConnect);
+  server.begin();
+  Serial.println("HTTP server started");
+  // Webserver ende  
+
+
   FastLED.addLeds<PL9823, LED_PIN_CLOCK>(ClockLeds, NUM_PIXELS_CLOCK);
   FastLED.addLeds<PL9823, LED_PIN_AUX>(AuxLeds, NUM_PIXELS_AUX);
   FastLED.setMaxPowerInMilliWatts(1000);
@@ -142,6 +152,7 @@ void setup() {
 
 void loop() {
   ArduinoOTA.handle();  // If you also want the OTA during regular execution
+  server.handleClient();
   // Your loop code here
   getNTPtime(1);
   display_clock();
@@ -166,7 +177,7 @@ void loop() {
   if (Modus == 3 ) Modus = 1;
 
 
-  Serial.println(preferences.freeEntries());
+  //Serial.println(preferences.freeEntries());
 
 
 
