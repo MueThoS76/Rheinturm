@@ -19,6 +19,16 @@
 #define BRIGHTNESS  10
 #include <Preferences.h> 
 
+// Farben
+uint CLOCK_COLOR_SEKUNDEN_EINER  = 0; 
+uint CLOCK_COLOR_SEKUNDEN_ZEHNER = 0; 
+uint CLOCK_COLOR_MINUTEN_EINER   = 0; 
+uint CLOCK_COLOR_MINUTEN_ZEHNER  = 0; 
+uint CLOCK_COLOR_STUNDEN_EINER   = 0; 
+uint CLOCK_COLOR_STUNDEN_ZEHNER  = 0; 
+uint CLOCK_COLOR_OFF             = 0; 
+
+
 Preferences preferences;
 
 CRGB ClockLeds[NUM_PIXELS_CLOCK];
@@ -26,7 +36,7 @@ CRGB AuxLeds[NUM_PIXELS_AUX];
 
 #define Touch_PIN 14 // Touchsensor
 #define Touch_Threshold 20
-#define DEBUG 1
+//#define DEBUG 1
 struct ziffern {
   byte einer;
   byte zehner;
@@ -101,24 +111,23 @@ void setup() {
   }
 
   // Einstellungen laden....
-  preferences.begin("myfile", false);
-  //preferences.clear(); // remove all preferences in namespace myfile
-  //preferences.remove("varname");// remove varname in the namespace
+  preferences.begin("config", false);
+  // preferences.clear(); // remove all preferences in namespace myfile
+  // preferences.remove("varname");// remove varname in the namespace
+  // preferences.putUInt("CCSE", 0xFFFF00);
+  // preferences.putFloat("param", param);
+  delay(50);
 
-  // Testdaten...
-  int boardId = 18; 
-  float param = 26.5;
-
-  preferences.putUInt("boardId", boardId);
-  preferences.putFloat("param", param);
-
-  unsigned int readId = preferences.getUInt("boardId", 0); // get boardId or if key doesn't exist set variable to 0
-  Serial.print("Read Id = ");
-  Serial.println(readId);
+  CLOCK_COLOR_SEKUNDEN_EINER  = preferences.getUInt("CCSE", 0xFFFF00);
+  CLOCK_COLOR_SEKUNDEN_ZEHNER = preferences.getUInt("CCSZ", 0xFFFF00);
+  CLOCK_COLOR_MINUTEN_EINER   = preferences.getUInt("CCME", 0xFFFF00);
+  CLOCK_COLOR_MINUTEN_ZEHNER  = preferences.getUInt("CCMZ", 0xFFFF00);
+  CLOCK_COLOR_STUNDEN_EINER   = preferences.getUInt("CCHE", 0xFFFF00);
+  CLOCK_COLOR_STUNDEN_ZEHNER  = preferences.getUInt("CCHZ", 0xFFFF00);
+  CLOCK_COLOR_OFF             = preferences.getUInt("CCO" , 0x000000);
   
-  float readParam = preferences.getFloat("param", 0); //
-  Serial.print("Read param = ");
-  Serial.println(readParam);
+
+
   
   preferences.end();
   // Einstellungen ende
@@ -155,6 +164,10 @@ void loop() {
     }
   }
   if (Modus == 3 ) Modus = 1;
+
+
+  Serial.println(preferences.freeEntries());
+
 
 
 #ifdef DEBUG
